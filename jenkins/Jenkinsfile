@@ -36,5 +36,20 @@ pipeline {
 		            sh script: '/opt/maven/bin/mvn package'	
            }		
         }
+
+       stage('Deploy to Tomcat Server to access the URL')
+	    {
+
+              steps{
+               deploy adapters: [tomcat8(path: '', url: 'http://34.121.205.117:8080/')], contextPath: null, war: '**/*.war'
+	      }
+	    }
+
+
+
+
+
+
+	    
     }
 }

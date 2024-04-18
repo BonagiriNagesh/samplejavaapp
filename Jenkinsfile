@@ -41,7 +41,7 @@ pipeline {
 	    {
 
               steps{
-               sh script: sudo cp /var/lib/jenkins/workspace/package/target/sampleapp.war /opt/tomcat/webapps/
+               sh script: sudo cp /var/lib/jenkins/workspace/packaging/target /opt/tomcat/webapps/
 		          sudo systemctl restart tomcat
 	      }
 	    }

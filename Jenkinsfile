@@ -1,51 +1,51 @@
-pipeline {
-    agent any
-    stages {
-        stage('compile') {
-	         steps {
-                echo 'compiling..'
-		            git url: 'https://github.com/lerndevops/samplejavaapp'
-		            sh script: '/opt/maven/bin/mvn compile'
-           }
-        }
-        stage('codereview-pmd') {
-	         steps {
-                echo 'codereview..'
-		            sh script: '/opt/maven/bin/mvn -P metrics pmd:pmd'
-           }
-	         post {
-               success {
-		             recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+  pipeline {
+        agent any
+        stages {
+            stage('compile') {
+                 steps {
+                    echo 'compiling..'
+                        git url: 'https://github.com/lerndevops/samplejavaapp'
+                        sh script: '/opt/maven/bin/mvn compile'
                }
-           }		
-        }
-        stage('unit-test') {
-	         steps {
-                echo 'unittest..'
-      	        sh script: '/opt/maven/bin/mvn test'
-                 }
-	          post {
-               success {
-                   junit 'target/surefire-reports/*.xml'
+            }
+            stage('codereview-pmd') {
+                 steps {
+                    echo 'codereview..'
+                        sh script: '/opt/maven/bin/mvn -P metrics pmd:pmd'
                }
-           }			
+                 post {
+                   success {
+                         recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+                   }
+                  }		
+            }
+            stage('unit-test') {
+                 steps {
+                    echo 'unittest..'
+                      sh script: '/opt/maven/bin/mvn test'
+                     }
+
+                  post {
+                   success {
+                       junit 'target/surefire-reports/*.xml'
+                   }
+               }			
+            }
+            stage('package') {
+                 steps {
+                    echo 'package......'
+                        sh script: '/opt/maven/bin/mvn package'	
+               }		
+            }
+    
+           stage('Deploy to Tomcat Server to access the URL')
+            {
+                  steps{
+                   sh script: sudo cp /var/lib/jenkins/workspace/packaging/target /opt/tomcat/webapps/
+               sh script: sudo systemctl restart tomcat
+              }
+            }
+    
+            
         }
-        stage('package') {
-	         steps {
-                echo 'package......'
-		            sh script: '/opt/maven/bin/mvn package'	
-           }		
-        }
-
-       stage('Deploy to Tomcat Server to access the URL')
-	    {
-
-              steps{
-               sh script: sudo cp /var/lib/jenkins/workspace/packaging/target /opt/tomcat/webapps/
-		          sudo systemctl restart tomcat
-	      }
-	    }
-
-	    
     }
-

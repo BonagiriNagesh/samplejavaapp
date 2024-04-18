@@ -41,7 +41,8 @@ pipeline {
 	    {
 
               steps{
-               deploy adapters: [tomcat8(credentialsId: 'TomcatUser', path: '', url: 'http://104.198.20.72:8081/')], contextPath: null, war: '**/*.war'
+               sh script: sudo cp /var/lib/jenkins/workspace/package/target/sampleapp.war /opt/tomcat/webapps/
+		          sudo systemctl restart tomcat
 	      }
 	    }
 

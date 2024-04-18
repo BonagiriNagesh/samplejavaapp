@@ -41,8 +41,8 @@
            stage('Deploy to Tomcat Server to access the URL')
             {
                   steps{
-                   sh script: sudo cp /var/lib/jenkins/workspace/packaging/target /opt/tomcat/webapps/
-               sh script: sudo systemctl restart tomcat
+                   sh : "sudo cp /var/lib/jenkins/workspace/packaging/target /opt/tomcat/webapps/"
+                   sh : "sudo systemctl restart tomcat"
               }
             }
     
